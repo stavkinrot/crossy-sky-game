@@ -1,5 +1,6 @@
 import pygame
 from random import randint, choice
+pygame.init()
 
 numbers_in_increments_of_32 = list(range(64, 737, 32))
 
@@ -9,8 +10,11 @@ class Obstacles(pygame.sprite.Sprite):
         y_pos = choice(numbers_in_increments_of_32)
         if type == 'eagle':
             fly_1 = pygame.image.load('graphics/Eagle/left1.png').convert_alpha()
+            fly_1 = pygame.transform.rotozoom(fly_1, 0, 2)
             fly_2 = pygame.image.load('graphics/Eagle/left2.png').convert_alpha()
+            fly_2 = pygame.transform.rotozoom(fly_2, 0, 2)
             fly_3 = pygame.image.load('graphics/Eagle/left3.png').convert_alpha()
+            fly_3 = pygame.transform.rotozoom(fly_3, 0, 2)
             self.frames = [fly_1, fly_2, fly_3]
         # else:
         #     snail_1 = pygame.image.load('graphics/snail/snail1.png').convert_alpha()
