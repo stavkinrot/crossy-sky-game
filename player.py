@@ -1,5 +1,4 @@
 import pygame
-
 pygame.init()
 
 
@@ -14,9 +13,8 @@ class Player(pygame.sprite.Sprite):
         player_fly_3 = pygame.transform.rotozoom(player_fly_3, 180, 2)
         self.player_fly = [player_fly_1, player_fly_2, player_fly_3]
         self.player_index = 0
-
         self.image = self.player_fly[self.player_index]
-        self.rect = self.image.get_rect(midbottom=(400, 780))
+        self.rect = self.image.get_rect(midbottom=(400, 780)).inflate(-25, -25)
 
     def animation_state(self):
         self.player_index += 0.3
@@ -27,10 +25,14 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             if self.rect.bottom >= 0:
-                self.rect.top -= 4
+                self.rect.top -= 5
+                return False
             else:
                 self.rect.top = 780
 
     def update(self):
-        self.player_input()
+        res = self.player_input()
         self.animation_state()
+        return res
+
+
