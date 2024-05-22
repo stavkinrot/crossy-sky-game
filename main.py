@@ -115,6 +115,7 @@ while True:
 
         score = 0
         difficulty_level = 0
+        player.sprite.rect.bottom = 780
 
     pygame.display.update()
     clock.tick(60)
