@@ -16,6 +16,7 @@ test_font = pygame.font.Font('font/Pixeltype.ttf', 50)
 game_active = False
 start_time = 0
 score = 0
+start_score = 0
 difficulty_level = 0
 birds = ['White Bird', 'Blue Jay', 'Cardinal']
 birds_index = 0
@@ -23,12 +24,12 @@ birds_index = 0
 sky_surface = pygame.image.load('graphics/Sky.jpg').convert_alpha()
 sky_surface = pygame.transform.rotozoom(sky_surface, 0, 0.4)
 
+obstacle_group = pygame.sprite.Group()
 
 def display_score():
     score_surf = test_font.render(f'Score: {score}', False, (225, 245, 255))
     score_rect = score_surf.get_rect(center=(400, 50))
     screen.blit(score_surf, score_rect)
-    return score
 
 
 def level_up(score, difficulty):
@@ -46,14 +47,6 @@ def collision_sprite():
         return False
     else:
         return True
-
-
-# Groups
-
-
-obstacle_group = pygame.sprite.Group()
-
-endpoint_group = pygame.sprite.GroupSingle()
 
 # Intro screen
 def intro_screen(birds, birds_index):
@@ -97,6 +90,9 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     game_active = True
+                    score = 0
+                    difficulty_level = 0
+                    player.sprite.rect.bottom = 780
                 if event.key == pygame.K_RIGHT:
                     if birds_index == len(birds) - 1:
                         birds_index = 0
@@ -143,9 +139,7 @@ while True:
         else:
             screen.blit(score_message, score_message_rect)
 
-        score = 0
-        difficulty_level = 0
-        player.sprite.rect.bottom = 780
+
 
     pygame.display.update()
     clock.tick(60)
