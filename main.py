@@ -34,6 +34,7 @@ def display_score():
 
 def level_up(score, difficulty):
     if player.sprite.rect.bottom < 0:
+        player.sprite.rect.top = 780
         score += 1
         if 1300 - difficulty > 250:
             difficulty += 150
@@ -73,7 +74,7 @@ left_arrow_rect = right_arrow.get_rect(center=(300, 400))
 
 # Timer
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer, int(1300 * math.exp(-difficulty_level)))
+pygame.time.set_timer(obstacle_timer, 1300)
 
 # The Game Loop:
 while True:

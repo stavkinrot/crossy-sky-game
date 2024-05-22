@@ -48,11 +48,10 @@ class Player(pygame.sprite.Sprite):
     def player_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
-            if self.rect.bottom >= 0:
-                self.rect.top -= 5
-                return False
-            else:
-                self.rect.top = 780
+            # if self.rect.bottom >= 0:
+            self.rect.top -= 5
+            # else:
+                # self.rect.top = 780
 
     def update(self):
         res = self.player_input()
