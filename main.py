@@ -10,18 +10,22 @@ from obstacles import Obstacles
 pygame.init()
 
 screen = pygame.display.set_mode((800, 800))
-pygame.display.set_caption('Crossing game')
+pygame.display.set_caption('Crossy Sky')
 clock = pygame.time.Clock()
-test_font = pygame.font.Font('font/Pixeltype.ttf', 50)
+test_font = pygame.font.Font('font/NicoClean-Regular.otf', 40)
+title_font = pygame.font.Font('font/NicoClean-Regular.otf', 60)
+arrows_font = pygame.font.Font('font/NicoPups-Regular.otf', 40)
 game_active = False
 start_time = 0
 score = 0
 start_score = 0
 difficulty_level = 0
+START_DIFFICULTY = 1300
+MAX_DIFFICULTY = 250
 birds = ['White Bird', 'Blue Jay', 'Cardinal']
 birds_index = 0
 
-sky_surface = pygame.image.load('graphics/Sky.jpg').convert_alpha()
+sky_surface = pygame.image.load('graphics/background/Sunny Sky.png').convert_alpha()
 sky_surface = pygame.transform.rotozoom(sky_surface, 0, 0.4)
 
 obstacle_group = pygame.sprite.Group()
@@ -36,16 +40,16 @@ def level_up(score, difficulty):
     if player.sprite.rect.bottom < 0:
         player.sprite.rect.top = 780
         score += 1
-        if 1300 - difficulty > 250:
+        if START_DIFFICULTY - difficulty > MAX_DIFFICULTY:
             difficulty += 150
-        pygame.time.set_timer(obstacle_timer, int(1300 - difficulty))
+        pygame.time.set_timer(obstacle_timer, int(START_DIFFICULTY - difficulty))
     return score, difficulty
 
 
 def collision_sprite():
     if pygame.sprite.spritecollide(player.sprite, obstacle_group, False):
         obstacle_group.empty()
-        pygame.time.set_timer(obstacle_timer, 1300)
+        pygame.time.set_timer(obstacle_timer, START_DIFFICULTY)
         return False
     else:
         return True
@@ -58,24 +62,21 @@ def intro_screen(birds, birds_index):
     return player_stand, player_stand_rect
 
 intro_screen(birds, birds_index)
-game_name = test_font.render('Crossy Sky', False, (225, 245, 255))
-game_name = pygame.transform.rotozoom(game_name, 0, 1.75)
+game_name = title_font.render('Crossy Sky', False, (225, 245, 255))
 game_name_rect = game_name.get_rect(center=(400, 260))
 
-game_message = test_font.render('Press UP to fly', False, (225, 245, 255))
+game_message = arrows_font.render('Press UP to fly', False, (225, 245, 255))
 game_message_rect = game_message.get_rect(center=(400, 540))
 
-right_arrow = test_font.render('>', False, (225, 245, 255))
-right_arrow = pygame.transform.rotozoom(right_arrow, 0, 1.5)
+right_arrow = arrows_font.render('>', False, (225, 245, 255))
 right_arrow_rect = right_arrow.get_rect(center=(500,400))
 
-left_arrow = test_font.render('<', False, (225, 245, 255))
-left_arrow = pygame.transform.rotozoom(left_arrow, 0, 1.5)
+left_arrow = arrows_font.render('<', False, (225, 245, 255))
 left_arrow_rect = right_arrow.get_rect(center=(300, 400))
 
 # Timer
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer, 1300)
+pygame.time.set_timer(obstacle_timer, START_DIFFICULTY)
 
 # The Game Loop:
 while True:
@@ -130,7 +131,7 @@ while True:
         bird, bird_rect = intro_screen(birds, birds_index)
         screen.blit(bird, bird_rect)
 
-        score_message = test_font.render(f'Your score: {score}', False, (225, 245, 255))
+        score_message = arrows_font.render(f'Your score: {score}', False, (225, 245, 255))
         score_message_rect = score_message.get_rect(center=(400, 330))
 
         screen.blit(game_name, game_name_rect)
