@@ -45,6 +45,7 @@ def level_up(score, difficulty):
 def collision_sprite():
     if pygame.sprite.spritecollide(player.sprite, obstacle_group, False):
         obstacle_group.empty()
+        pygame.time.set_timer(obstacle_timer, 1300)
         return False
     else:
         return True
@@ -117,6 +118,7 @@ while True:
         player.update()
         score, difficulty_level = level_up(score, difficulty_level)
 
+
         obstacle_group.draw(screen)
         obstacle_group.update()
 
@@ -134,11 +136,13 @@ while True:
         screen.blit(game_name, game_name_rect)
         screen.blit(right_arrow, right_arrow_rect)
         screen.blit(left_arrow, left_arrow_rect)
+        obstacle_group.empty()
 
         if score == 0:
             screen.blit(game_message, game_message_rect)
         else:
             screen.blit(score_message, score_message_rect)
+
 
 
 
