@@ -22,13 +22,14 @@ start_score = 0
 difficulty_level = 0
 START_DIFFICULTY = 1300
 MAX_DIFFICULTY = 250
-birds = ['White Bird', 'Blue Jay', 'Cardinal']
+birds = ['White', 'Blue', 'Cardinal', 'Robin', 'Sparrow']
 birds_index = 0
 
 sky_surface = pygame.image.load('graphics/background/Sunny Sky.png').convert_alpha()
 sky_surface = pygame.transform.rotozoom(sky_surface, 0, 0.4)
 
 obstacle_group = pygame.sprite.Group()
+
 
 def display_score():
     score_surf = test_font.render(f'Score: {score}', False, (225, 245, 255))
@@ -56,7 +57,7 @@ def collision_sprite():
 
 # Intro screen
 def intro_screen(birds, birds_index):
-    player_stand = pygame.image.load(f'graphics/{birds[birds_index]}/left2.png').convert_alpha()
+    player_stand = pygame.image.load(f'graphics/Birds/{birds[birds_index]}/tile001.png').convert_alpha()
     player_stand = pygame.transform.rotozoom(player_stand, 0, 2)
     player_stand_rect = player_stand.get_rect(center=(400, 400))
     return player_stand, player_stand_rect

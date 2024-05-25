@@ -1,61 +1,108 @@
 import pygame
+
 pygame.init()
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, bird):
         super().__init__()
-        rotate = 0
-        if bird == 'Blue Jay': rotate = 180
-        player_fly_up_1 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_up_1 = pygame.transform.rotozoom(player_fly_up_1, rotate, 2)
-        player_fly_up_2 = pygame.image.load(f'graphics/{bird}/tile007.png').convert_alpha()
-        player_fly_up_2 = pygame.transform.rotozoom(player_fly_up_2, rotate, 2)
-        player_fly_up_3 = pygame.image.load(f'graphics/{bird}/tile008.png').convert_alpha()
-        player_fly_up_3 = pygame.transform.rotozoom(player_fly_up_3, rotate, 2)
-        player_fly_down_1 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_down_1 = pygame.transform.rotozoom(player_fly_down_1, rotate + 180, 2)
-        player_fly_down_2 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_down_2 = pygame.transform.rotozoom(player_fly_down_2, rotate + 180, 2)
-        player_fly_down_3 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_down_3 = pygame.transform.rotozoom(player_fly_down_3, rotate + 180, 2)
-        player_fly_right_1 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_right_1 = pygame.transform.rotozoom(player_fly_right_1, rotate, 2)
-        player_fly_right_2 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_right_2 = pygame.transform.rotozoom(player_fly_right_2, rotate, 2)
-        player_fly_right_3 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_right_3 = pygame.transform.rotozoom(player_fly_right_3, rotate, 2)
-        player_fly_left_1 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_left_1 = pygame.transform.rotozoom(player_fly_left_1, rotate, 2)
-        player_fly_left_2 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_left_2 = pygame.transform.rotozoom(player_fly_left_2, rotate, 2)
-        player_fly_left_3 = pygame.image.load(f'graphics/{bird}/tile006.png').convert_alpha()
-        player_fly_left_3 = pygame.transform.rotozoom(player_fly_left_3, rotate, 2)
+        self.up_list = []
+        self.down_list = []
+        self.right_list = []
+        self.left_list = []
+        self.left_up_list = []
+        self.left_down_list = []
+        self.right_up_list = []
+        self.right_down_list = []
 
-        self.player_fly_up = [player_fly_up_1, player_fly_up_2, player_fly_up_3]
-        self.player_fly_down = [player_fly_down_1, player_fly_down_2, player_fly_down_3]
-        self.player_fly_right = [player_fly_right_1, player_fly_right_2, player_fly_right_3]
-        self.player_fly_left = [player_fly_left_1, player_fly_left_2, player_fly_left_3]
+        # Upload image files:
+
+        for i in range(0, 3):
+            up = pygame.image.load(f'graphics/Birds/{bird}/tile00{+ (i + 3)}.png').convert_alpha()
+            up_scale = pygame.transform.rotozoom(up, 0, 2)
+            self.up_list.append(up_scale)
+
+            down = pygame.transform.rotozoom(up, 180, 2)
+            self.down_list.append(down)
+
+            if i == 0:
+                right = pygame.image.load(f'graphics/Birds/{bird}/tile00{+ (i + 9)}.png').convert_alpha()
+            else:
+                right = pygame.image.load(f'graphics/Birds/{bird}/tile0{+ (i + 9)}.png').convert_alpha()
+            right_scale = pygame.transform.rotozoom(right, 0, 2)
+            self.right_list.append(right_scale)
+
+            right_up_scale = pygame.transform.rotozoom(right, 45, 2)
+            self.right_up_list.append(right_up_scale)
+
+            right_down_scale = pygame.transform.rotozoom(right, -45, 2)
+            self.right_down_list.append(right_down_scale)
+
+            left = pygame.image.load(f'graphics/Birds/{bird}/tile00{+ i}.png').convert_alpha()
+            left_scale = pygame.transform.rotozoom(left, 0, 2)
+            self.left_list.append(left_scale)
+
+            left_up_scale = pygame.transform.rotozoom(left, -45, 2)
+            self.left_up_list.append(left_up_scale)
+
+            left_down_scale = pygame.transform.rotozoom(left, 45, 2)
+            self.left_down_list.append(left_down_scale)
+
+        # Initizalize bird's location
+
         self.player_index = 0
-        self.image = self.player_fly_up[self.player_index]
+        self.image = self.up_list[self.player_index]
         self.rect = self.image.get_rect(midbottom=(400, 780)).inflate(-25, -25)
 
-    def animation_state(self):
+    def animation_state(self, direction):
         self.player_index += 0.3
-        if self.player_index >= len(self.player_fly_up): self.player_index = 0
-        self.image = self.player_fly_up[int(self.player_index)]
+        direction_lists = {'up': self.up_list,
+                           'down': self.down_list,
+                           'right': self.right_list,
+                           'left': self.left_list,
+                           'right_up': self.right_up_list,
+                           'right_down': self.right_down_list,
+                           'left_up': self.left_up_list,
+                           'left_down': self.left_down_list,
+                           }
+        if direction is None: direction = 'up'
+        image_list = direction_lists[direction]
+        if self.player_index >= len(image_list): self.player_index = 0
+        self.image = image_list[int(self.player_index)]
 
     def player_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
-            # if self.rect.bottom >= 0:
-            self.rect.top -= 5
-            # else:
-                # self.rect.top = 780
+            if keys[pygame.K_RIGHT]:
+                self.rect.y -= 3.535
+                self.rect.x += 3.535
+                return 'right_up'
+            elif keys[pygame.K_LEFT]:
+                self.rect.y -= 3.535
+                self.rect.x -= 3.535
+                return 'left_up'
+            else:
+                self.rect.y -= 5
+            return 'up'
+        if keys[pygame.K_DOWN]:
+            if keys[pygame.K_RIGHT]:
+                self.rect.y += 3.535
+                self.rect.x += 3.535
+                return 'right_down'
+            elif keys[pygame.K_LEFT]:
+                self.rect.y += 3.535
+                self.rect.x -= 3.535
+                return 'left_down'
+            else:
+                self.rect.y += 5
+            return 'down'
+        if keys[pygame.K_RIGHT]:
+            self.rect.x += 5
+            return 'right'
+        if keys[pygame.K_LEFT]:
+            self.rect.x -= 5
+            return 'left'
 
     def update(self):
-        res = self.player_input()
-        self.animation_state()
-        return res
-
-
+        dir = self.player_input()
+        self.animation_state(direction=dir)
