@@ -24,8 +24,11 @@ START_DIFFICULTY = 1300
 MAX_DIFFICULTY = 250
 birds = ['White', 'Blue', 'Cardinal', 'Robin', 'Sparrow']
 birds_index = 0
+bird_choose = True
 
-sky_surface = pygame.image.load('graphics/background/Sunny Sky.png').convert_alpha()
+sky_backgrounds = ['Sunny Sky', 'Rainy Sky', 'Stormy Sky']
+sky_background_index = 0
+sky_surface = pygame.image.load(f'graphics/background/{sky_backgrounds[sky_background_index]}.png').convert_alpha()
 sky_surface = pygame.transform.rotozoom(sky_surface, 0, 0.4)
 
 obstacle_group = pygame.sprite.Group()
@@ -56,15 +59,15 @@ def collision_sprite():
         return True
 
 # Intro screen
-def intro_screen(birds, birds_index):
-    player_stand = pygame.image.load(f'graphics/Birds/{birds[birds_index]}/tile001.png').convert_alpha()
-    player_stand = pygame.transform.rotozoom(player_stand, 0, 2)
-    player_stand_rect = player_stand.get_rect(center=(400, 400))
-    return player_stand, player_stand_rect
+# def intro_screen(birds, birds_index):
+#     player_stand = pygame.image.load(f'graphics/Birds/{birds[birds_index]}/tile001.png').convert_alpha()
+#     player_stand = pygame.transform.rotozoom(player_stand, 0, 2)
+#     player_stand_rect = player_stand.get_rect(center=(400, 400))
+#     return player_stand, player_stand_rect
 
-intro_screen(birds, birds_index)
+# intro_screen(birds, birds_index)
 game_name = title_font.render('Crossy Sky', False, (225, 245, 255))
-game_name_rect = game_name.get_rect(center=(400, 260))
+game_name_rect = game_name.get_rect(center=(400, 280))
 
 game_message = arrows_font.render('Press UP to fly', False, (225, 245, 255))
 game_message_rect = game_message.get_rect(center=(400, 540))
@@ -74,6 +77,17 @@ right_arrow_rect = right_arrow.get_rect(center=(500,400))
 
 left_arrow = arrows_font.render('<', False, (225, 245, 255))
 left_arrow_rect = right_arrow.get_rect(center=(300, 400))
+
+# Clouds - Difficulty levels:
+sunny_cloud = pygame.image.load('graphics/Regular Cloud.png').convert_alpha()
+sunny_cloud = pygame.transform.rotozoom(sunny_cloud, 0, 0.25)
+sunny_cloud_rect = sunny_cloud.get_rect(center=(160,150))
+rainy_cloud = pygame.image.load('graphics/Rain Cloud.png').convert_alpha()
+rainy_cloud = pygame.transform.rotozoom(rainy_cloud, 0, 0.25)
+rainy_cloud_rect = rainy_cloud.get_rect(center=(410,160))
+stormy_cloud = pygame.image.load('graphics/Storm Cloud.png').convert_alpha()
+stormy_cloud = pygame.transform.rotozoom(stormy_cloud, 0, 0.25)
+stormy_cloud_rect = stormy_cloud.get_rect(center=(650, 200))
 
 # Timer
 obstacle_timer = pygame.USEREVENT + 1
@@ -91,12 +105,16 @@ while True:
                 obstacle_group.add(Obstacles(choice(['eagle'])))
 
         else:
+            if bird_choose:
+                player = pygame.sprite.GroupSingle()
+                player.add(Player(birds[birds_index]))
+                bird_choose = False
+            if player.sprite.rect.colliderect(rainy_cloud_rect):
+                game_active = True
+                score = 0
+                difficulty_level = 0
+                player.sprite.rect.bottom = 780
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    game_active = True
-                    score = 0
-                    difficulty_level = 0
-                    player.sprite.rect.bottom = 780
                 if event.key == pygame.K_RIGHT:
                     if birds_index == len(birds) - 1:
                         birds_index = 0
@@ -107,9 +125,8 @@ while True:
                         birds_index = len(birds) - 1
                     else:
                         birds_index -= 1
-                intro_screen(birds, birds_index)
-            player = pygame.sprite.GroupSingle()
-            player.add(Player(birds[birds_index]))
+            # intro_screen(birds, birds_index)
+
 
 
     if game_active:
@@ -125,19 +142,20 @@ while True:
         obstacle_group.update()
 
         game_active = collision_sprite()
+        if not game_active: bird_choose = True
 
 
     else:
         screen.fill((44, 141, 222))
-        bird, bird_rect = intro_screen(birds, birds_index)
-        screen.blit(bird, bird_rect)
 
         score_message = arrows_font.render(f'Your score: {score}', False, (225, 245, 255))
         score_message_rect = score_message.get_rect(center=(400, 330))
 
+        screen.blit(sunny_cloud, sunny_cloud_rect)
+        screen.blit(rainy_cloud, rainy_cloud_rect)
+        screen.blit(stormy_cloud, stormy_cloud_rect)
         screen.blit(game_name, game_name_rect)
-        screen.blit(right_arrow, right_arrow_rect)
-        screen.blit(left_arrow, left_arrow_rect)
+
         obstacle_group.empty()
 
         if score == 0:
@@ -145,8 +163,8 @@ while True:
         else:
             screen.blit(score_message, score_message_rect)
 
-
-
+        player.draw(screen)
+        player.update()
 
     pygame.display.update()
     clock.tick(60)
