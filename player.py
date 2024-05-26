@@ -14,6 +14,11 @@ class Player(pygame.sprite.Sprite):
         self.left_down_list = []
         self.right_up_list = []
         self.right_down_list = []
+        self.stand_list = []
+        self.bird = bird
+        self.intro = True
+        self.player = False
+        self.chosen = False
 
         # Upload image files:
 
@@ -24,6 +29,10 @@ class Player(pygame.sprite.Sprite):
 
             down = pygame.transform.rotozoom(up, 180, 2)
             self.down_list.append(down)
+
+            stand = pygame.image.load(f'graphics/Birds/{bird}/tile00{+ (i + 6)}.png').convert_alpha()
+            stand = pygame.transform.rotozoom(stand, 0, 2)
+            self.stand_list.append(stand)
 
             if i == 0:
                 right = pygame.image.load(f'graphics/Birds/{bird}/tile00{+ (i + 9)}.png').convert_alpha()
@@ -50,12 +59,12 @@ class Player(pygame.sprite.Sprite):
 
         # Initizalize bird's location
 
-        self.player_index = 0
-        self.image = self.up_list[self.player_index]
+        self.animation_index = 0
+        self.image = self.up_list[self.animation_index]
         self.rect = self.image.get_rect(midbottom=(400, 780)).inflate(-25, -25)
 
     def animation_state(self, direction):
-        self.player_index += 0.3
+        self.animation_index += 0.3
         direction_lists = {'up': self.up_list,
                            'down': self.down_list,
                            'right': self.right_list,
@@ -64,45 +73,56 @@ class Player(pygame.sprite.Sprite):
                            'right_down': self.right_down_list,
                            'left_up': self.left_up_list,
                            'left_down': self.left_down_list,
+                           'stand_list': self.stand_list
                            }
-        if direction is None: direction = 'up'
+        if self.intro: direction = 'stand_list'
+        elif direction is None: direction = 'up'
         image_list = direction_lists[direction]
-        if self.player_index >= len(image_list): self.player_index = 0
-        self.image = image_list[int(self.player_index)]
+        if self.animation_index >= len(image_list): self.animation_index = 0
+        self.image = image_list[int(self.animation_index)]
 
     def player_input(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP]:
+        if self.intro and not self.player:
+            return 'intro'
+        else:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP]:
+                if keys[pygame.K_RIGHT]:
+                    self.rect.y -= 3.535
+                    self.rect.x += 3.535
+                    return 'right_up'
+                elif keys[pygame.K_LEFT]:
+                    self.rect.y -= 3.535
+                    self.rect.x -= 3.535
+                    return 'left_up'
+                else:
+                    self.rect.y -= 5
+                return 'up'
+            if keys[pygame.K_DOWN]:
+                if keys[pygame.K_RIGHT]:
+                    self.rect.y += 3.535
+                    self.rect.x += 3.535
+                    return 'right_down'
+                elif keys[pygame.K_LEFT]:
+                    self.rect.y += 3.535
+                    self.rect.x -= 3.535
+                    return 'left_down'
+                else:
+                    self.rect.y += 5
+                return 'down'
             if keys[pygame.K_RIGHT]:
-                self.rect.y -= 3.535
-                self.rect.x += 3.535
-                return 'right_up'
-            elif keys[pygame.K_LEFT]:
-                self.rect.y -= 3.535
-                self.rect.x -= 3.535
-                return 'left_up'
-            else:
-                self.rect.y -= 5
-            return 'up'
-        if keys[pygame.K_DOWN]:
-            if keys[pygame.K_RIGHT]:
-                self.rect.y += 3.535
-                self.rect.x += 3.535
-                return 'right_down'
-            elif keys[pygame.K_LEFT]:
-                self.rect.y += 3.535
-                self.rect.x -= 3.535
-                return 'left_down'
-            else:
-                self.rect.y += 5
-            return 'down'
-        if keys[pygame.K_RIGHT]:
-            self.rect.x += 5
-            return 'right'
-        if keys[pygame.K_LEFT]:
-            self.rect.x -= 5
-            return 'left'
+                self.rect.x += 5
+                return 'right'
+            if keys[pygame.K_LEFT]:
+                self.rect.x -= 5
+                return 'left'
 
     def update(self):
-        dir = self.player_input()
-        self.animation_state(direction=dir)
+        if self.player and self.chosen:
+            dir = self.player_input()
+            self.animation_state(direction=dir)
+        elif self.player:
+            self.animation_state(direction='stand_list')
+        elif self.intro:
+            self.image = self.stand_list[0]
+
