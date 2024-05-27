@@ -17,22 +17,53 @@ score_font = pygame.font.Font('font/NicoClean-Regular.otf', 40)
 title_font = pygame.font.Font('font/NicoClean-Regular.otf', 80)
 message_font = pygame.font.Font('font/NicoPups-Regular.otf', 40)
 
+# Music
+easy_music = pygame.mixer.Sound('audio/[MapleStory BGM] Ludibrium_ Flying in a Blue Dream.mp3')
+easy_music.set_volume(0.15)
+normal_music = pygame.mixer.Sound('audio/[MapleStory BGM] Orbis_ Upon the Sky.mp3')
+normal_music.set_volume(0.15)
+hard_music = pygame.mixer.Sound('audio/[MapleStory BGM] The Final War (KMST 1.2.445).mp3')
+hard_music.set_volume(0.15)
+bg_music = [easy_music, normal_music, hard_music]
+
+
 # Game state variables
 game_active = False
 start_time = 0
 score = 0
+screen_colors = [(44, 141, 222),(163, 175, 189),(0, 8, 44)]
+color_index = 0
 start_score = 0
 difficulty_level = 0
 START_DIFFICULTY = 1300
 MAX_DIFFICULTY = 250
 birds = ['White', 'Blue', 'Cardinal', 'Robin', 'Sparrow']
+current_music = normal_music
 birds_index = 0
 bird_chosen = False
 sky_surface = None
 instruction_menu = True
 
+current_music.play(loops=-1, fade_ms=2000)
+
+
 # Groups
 obstacle_group = pygame.sprite.Group()
+
+def instruction_bird():
+    screen.blit(branch, branch_rect)
+    screen.blit(eagle_instructor, eagle_instructor_rect)
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    if eagle_instructor_rect.left <= mouse_x <= eagle_instructor_rect.right and eagle_instructor_rect.top <= mouse_y <= eagle_instructor_rect.bottom:
+        screen.blit(instructions_cloud, instructions_cloud_rect)
+    else: screen.blit(question_mark, question_mark_rect)
+
+def change_music(music):
+    global current_music
+    if current_music is not music:
+        current_music.fadeout(750)
+        current_music = music
+        current_music.play(loops=-1, fade_ms= 500)
 
 # Set up the birds
 def set_birds():
@@ -87,7 +118,7 @@ def collision_sprite():
 
 # Set the difficulty and background based on the chosen cloud
 def set_difficulty(cloud):
-    global sky_surface, MAX_DIFFICULTY, START_DIFFICULTY
+    global sky_surface, MAX_DIFFICULTY, START_DIFFICULTY, color_index
     sky_backgrounds = ['Sunny Sky', 'Rainy Sky', 'Stormy Sky']
     sky_surface = pygame.image.load(f'graphics/background/{sky_backgrounds[cloud]}.png').convert_alpha()
     sky_surface = pygame.transform.rotozoom(sky_surface, 0, 0.4)
@@ -100,6 +131,8 @@ def set_difficulty(cloud):
     else:
         START_DIFFICULTY = 700
         MAX_DIFFICULTY = 225
+    color_index = cloud
+    return bg_music[cloud]
 
 # Game title and message
 game_name = title_font.render('Crossy Sky', False, (225, 245, 255))
@@ -119,10 +152,19 @@ stormy_cloud = pygame.image.load('graphics/Storm Cloud.png').convert_alpha()
 stormy_cloud = pygame.transform.rotozoom(stormy_cloud, 0, 0.25)
 clouds_list.append(stormy_cloud.get_rect(center=(650, 200)))
 
-# Instructions cloud (commented out as it's not used)
-# instructions_cloud = pygame.image.load('graphics/Instruction Cloud.png').convert_alpha()
-# instructions_cloud = pygame.transform.rotozoom(instructions_cloud, 0, 0.6)
-# instructions_cloud_rect = instructions_cloud.get_rect(center=(400,600))
+# Instructions graphics
+eagle_instructor = pygame.image.load('graphics/Eagle/stand.png')
+eagle_instructor = pygame.transform.rotozoom(eagle_instructor,0,2)
+eagle_instructor_rect = eagle_instructor.get_rect(left=120, bottom=750)
+branch = pygame.image.load('graphics/branch.png')
+branch = pygame.transform.rotozoom(branch, 0, 0.35)
+branch_rect = branch.get_rect(left=-10, bottom=850)
+instructions_cloud = pygame.image.load('graphics/pixel-speech-bubble (2).png').convert_alpha()
+instructions_cloud = pygame.transform.rotozoom(instructions_cloud, 0, 0.35)
+question_mark = pygame.image.load('graphics/question_mark.png')
+question_mark = pygame.transform.rotozoom(question_mark,0,0.05)
+question_mark_rect = question_mark.get_rect(left=167, bottom=705)
+instructions_cloud_rect = instructions_cloud.get_rect(left=30,bottom=700)
 
 # Timer for spawning obstacles
 obstacle_timer = pygame.USEREVENT + 1
@@ -140,7 +182,8 @@ while True:
         elif bird_chosen:
             for i in range(3):
                 if player.sprite.rect.colliderect(clouds_list[i]):
-                    set_difficulty(i)
+                    music = set_difficulty(i)
+                    change_music(music)
                     game_active = True
                     instruction_menu = False
                     score = 0
@@ -176,7 +219,12 @@ while True:
             player.intro = True
             player.chosen = False
     else:
-        screen.fill((44, 141, 222))
+        screen.fill(screen_colors[color_index])
+        if instruction_menu:
+            # screen.blit(game_message, game_message_rect)
+            instruction_bird()
+        else:
+            screen.blit(score_message, score_message_rect)
         score_message = message_font.render(f'Your score: {score}', False, (225, 245, 255))
         score_message_rect = score_message.get_rect(center=(400, 500))
         screen.blit(sunny_cloud, clouds_list[0])
@@ -184,11 +232,6 @@ while True:
         screen.blit(stormy_cloud, clouds_list[2])
         screen.blit(game_name, game_name_rect)
         obstacle_group.empty()
-        if instruction_menu:
-            screen.blit(game_message, game_message_rect)
-            # screen.blit(instructions_cloud, instructions_cloud_rect)  # Commented out as it's not used
-        else:
-            screen.blit(score_message, score_message_rect)
         birds_group.draw(screen)
         birds_group.update()
         if bird_chosen:
