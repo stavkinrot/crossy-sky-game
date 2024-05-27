@@ -5,9 +5,16 @@ This is a simplified, sky version of the famous "Crossy Road" game I created. In
 
 - Change skins by pressing right or left in the menu screen.
 ## Credits:
-Birds graphics - "[LPC] Birds" by bluecarrot16, commissioned by castelonia.
-link: https://opengameart.org/content/lpc-birds
+Graphics:
 
-Sky Background - https://www.freepik.com/free-vector/flat-design-pixel-art-cloud-illustration_39041193.htm#from_view=detail_serie
+Birds - "[LPC] Birds" by bluecarrot16, commissioned by castelonia. https://opengameart.org/content/lpc-birds
 
-Font - www.kenney.nl
+Sky - https://www.freepik.com/free-vector/flat-design-pixel-art-cloud-illustration_39041193.htm#from_view=detail_serie
+
+Branch - https://www.pixilart.com/art/branch-sprites-ef7708200832d08
+
+Fonts - Nico Fonts https://emhuo.itch.io/nico-pixel-fonts-pack
+
+Music - Maplestory
+
+
