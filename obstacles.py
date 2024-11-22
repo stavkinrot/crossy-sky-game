@@ -5,7 +5,7 @@ pygame.init()
 numbers_in_increments_of_32 = list(range(64, 737, 32))
 
 class Obstacles(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, speed):
         super().__init__()
         y_pos = choice(numbers_in_increments_of_32)
         fly_1 = pygame.image.load('graphics/Eagle/left1.png').convert_alpha()
@@ -19,7 +19,7 @@ class Obstacles(pygame.sprite.Sprite):
         self.animation_index = 0
         self.image = self.frames[self.animation_index]
         self.rect = self.image.get_rect(midbottom=(randint(900, 1100), y_pos)).inflate(-25, -25)
-        self.speed = 6
+        self.speed = speed
 
     def animation_state(self):
         self.animation_index += 0.3

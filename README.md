@@ -5,18 +5,26 @@ This is a simplified, sky version of the famous "Crossy Road" game I created. In
 
 - Please make sure you have all the files in the same folder.
 
-- Change skins by pressing right or left in the menu screen.
-## Credits:
-Graphics:
+- Please read the game instructions, either here or by hovering over the eagle in the menu screen.
 
-Birds - "[LPC] Birds" by bluecarrot16, commissioned by castelonia. https://opengameart.org/content/lpc-birds
+### Game Instructions:
+1. Use left/right to change bird.
+2. Press UP to choose your bird and fly.
+3. Fly with the arrow keys. Fly to any cloud to start the game:
+    - White Cloud - easy mode
+    - Rain Cloud - normal
+    - Storm Cloud - hard mode
 
-Sky - https://www.freepik.com/free-vector/flat-design-pixel-art-cloud-illustration_39041193.htm#from_view=detail_serie
+4. Avoid the eagles and cross the sky. It gets harder with each successful crossing. Good luck!
+### Credits:
+- Birds - "[LPC] Birds" by bluecarrot16, commissioned by castelonia. https://opengameart.org/content/lpc-birds
 
-Branch - https://www.pixilart.com/art/branch-sprites-ef7708200832d08
+- Sky - https://www.freepik.com/free-vector/flat-design-pixel-art-cloud-illustration_39041193.htm#from_view=detail_serie
 
-Fonts - Nico Fonts https://emhuo.itch.io/nico-pixel-fonts-pack
+- Branch - https://www.pixilart.com/art/branch-sprites-ef7708200832d08
 
-Music - Maplestory
+- Fonts - Nico Fonts https://emhuo.itch.io/nico-pixel-fonts-pack
+
+- Music - Maplestory, Nexon.
 
 
