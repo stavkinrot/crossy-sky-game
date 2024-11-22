@@ -37,6 +37,7 @@ start_score = 0
 difficulty_level = 0
 START_DIFFICULTY = 1300
 MAX_DIFFICULTY = 250
+eagle_speed = 0
 birds = ['White', 'Blue', 'Cardinal', 'Robin', 'Sparrow']
 current_music = normal_music
 birds_index = 0
@@ -118,19 +119,22 @@ def collision_sprite():
 
 # Set the difficulty and background based on the chosen cloud
 def set_difficulty(cloud):
-    global sky_surface, MAX_DIFFICULTY, START_DIFFICULTY, color_index
+    global sky_surface, MAX_DIFFICULTY, START_DIFFICULTY, color_index, eagle_speed
     sky_backgrounds = ['Sunny Sky', 'Rainy Sky', 'Stormy Sky']
     sky_surface = pygame.image.load(f'graphics/background/{sky_backgrounds[cloud]}.png').convert_alpha()
     sky_surface = pygame.transform.rotozoom(sky_surface, 0, 0.4)
     if cloud == 0:
         START_DIFFICULTY = 1300
         MAX_DIFFICULTY = 275
+        eagle_speed = 6
     elif cloud == 1:
         START_DIFFICULTY = 1200
         MAX_DIFFICULTY = 250
+        eagle_speed = 6.5
     else:
         START_DIFFICULTY = 700
         MAX_DIFFICULTY = 225
+        eagle_speed = 7
     color_index = cloud
     return bg_music[cloud]
 
@@ -142,7 +146,7 @@ game_message_rect = game_message.get_rect(center=(400, 500))
 
 # Clouds - Difficulty levels
 clouds_list = []
-sunny_cloud = pygame.image.load('graphics/Regular Cloud 2.png').convert_alpha()
+sunny_cloud = pygame.image.load('graphics/Regular Cloud.png').convert_alpha()
 sunny_cloud = pygame.transform.rotozoom(sunny_cloud, 0, 0.25)
 clouds_list.append(sunny_cloud.get_rect(center=(160, 150)))
 rainy_cloud = pygame.image.load('graphics/Rain Cloud.png').convert_alpha()
@@ -159,7 +163,7 @@ eagle_instructor_rect = eagle_instructor.get_rect(left=120, bottom=750)
 branch = pygame.image.load('graphics/branch.png')
 branch = pygame.transform.rotozoom(branch, 0, 0.35)
 branch_rect = branch.get_rect(left=-10, bottom=850)
-instructions_cloud = pygame.image.load('graphics/pixel-speech-bubble (2).png').convert_alpha()
+instructions_cloud = pygame.image.load('graphics/pixel-speech-bubble.png').convert_alpha()
 instructions_cloud = pygame.transform.rotozoom(instructions_cloud, 0, 0.35)
 question_mark = pygame.image.load('graphics/question_mark.png')
 question_mark = pygame.transform.rotozoom(question_mark,0,0.05)
@@ -178,7 +182,7 @@ while True:
             exit()
         elif game_active:
             if event.type == obstacle_timer:
-                obstacle_group.add(Obstacles())
+                obstacle_group.add(Obstacles(eagle_speed))
         elif bird_chosen:
             for i in range(3):
                 if player.sprite.rect.colliderect(clouds_list[i]):
