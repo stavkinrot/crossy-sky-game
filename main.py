@@ -19,11 +19,11 @@ message_font = pygame.font.Font('font/NicoPups-Regular.otf', 40)
 
 # Music
 easy_music = pygame.mixer.Sound('audio/[MapleStory BGM] Ludibrium_ Flying in a Blue Dream.mp3')
-easy_music.set_volume(0.15)
+easy_music.set_volume(0.3)
 normal_music = pygame.mixer.Sound('audio/[MapleStory BGM] Orbis_ Upon the Sky.mp3')
-normal_music.set_volume(0.15)
+normal_music.set_volume(0.3)
 hard_music = pygame.mixer.Sound('audio/[MapleStory BGM] The Final War (KMST 1.2.445).mp3')
-hard_music.set_volume(0.15)
+hard_music.set_volume(0.3)
 bg_music = [easy_music, normal_music, hard_music]
 
 
